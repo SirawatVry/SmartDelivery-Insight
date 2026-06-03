@@ -33,8 +33,10 @@ def get_client():
         config=Config(signature_version="s3v4"),
         region_name="us-east-1",
     )
-def upload(s3,table_name,cs_filename):
+def upload(s3, table_name, cs_filename):
+    print(f"Processing {table_name}...")
     df = pd.read_csv(DATA_DIR / cs_filename)
+    print(f"  Read {len(df)} rows")
     df.to_parquet(buffer := io.BytesIO(), index=False)
     buffer.seek(0)
     s3.put_object(
@@ -42,11 +44,15 @@ def upload(s3,table_name,cs_filename):
         Key=f"{table_name}.parquet",
         Body=buffer.getvalue()
     )
+    print(f"  Uploaded {table_name} ✓")
 
 def main():
     s3 = get_client()
+    print(f"Connecting to {MINIO_ENDPOINT}")
+    print(f"Uploading to bucket: {BUCKET}")
     for table_name, filename in TABLES.items():
         upload(s3, table_name, filename)
+    print("Done!")
 
 if __name__ == "__main__":
     main()
