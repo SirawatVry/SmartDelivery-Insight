@@ -1,0 +1,1 @@
+select * from read_parquet('s3://olist-raw/orders.parquet')

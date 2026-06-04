@@ -3,12 +3,12 @@ olist:
   outputs:
     dev:
       type: duckdb
-      path: /dbt/duckdb/olist.duckdb
+      path: /data/duckdb/olist.duckdb
       extensions:
         - httpfs
-        settings:
-          s3_endpoint: http://minio:9000
-          s3_access_key_id: ${MINIO_ROOT_USER}
-          s3_secret_access_key: ${MINIO_ROOT_PASSWORD}
-          s3_use_ssl: false
-          s3_url_style: path
+      settings:
+        s3_endpoint: minio:9000
+        s3_access_key_id: "{{ env_var('MINIO_ROOT_USER') }}"
+        s3_secret_access_key: "{{ env_var('MINIO_ROOT_PASSWORD') }}"
+        s3_use_ssl: false
+        s3_url_style: path
